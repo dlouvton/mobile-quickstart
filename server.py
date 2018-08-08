@@ -53,10 +53,10 @@ def call():
   caller_id = os.environ.get("CALLER_ID", CALLER_ID)
   if not from_client:
     # PSTN -> client
-    resp.dial(callerId=from_value)
-    resp.client('user1')
-    resp.client('user2')
-    resp.client('user3')
+    dialer = resp.dial(callerId=from_value)
+    dialer.client('user1')
+    dialer.client('user2')
+    dialer.client('user3')
   elif to.startswith("client:"):
     # client -> client
     resp.dial(callerId=from_value).client(to[7:])
