@@ -55,7 +55,6 @@ def call():
     # PSTN -> client
     dialer = resp.dial(callerId=from_value)
     dialer.client('14153606828')
-    dialer.client('005R0000000FjGfIAK')
     # dialer.client('14157991740')
     
   elif to.startswith("client:"):
