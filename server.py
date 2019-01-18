@@ -1,7 +1,6 @@
 import os
-from flask import Flask, request, Response
+from flask import Flask, request
 from twilio.util import TwilioCapability
-from twilio.rest import Client
 import twilio.twiml
 
 # Account Sid and Auth Token can be found in your account dashboard
@@ -13,9 +12,7 @@ APP_SID = 'APZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'
 
 CALLER_ID = '+12345678901'
 CLIENT = 'jenny'
-workspace_sid = 'sid1'
-workflow_sid = 'sid'
-task_sid = 'sid'
+
 app = Flask(__name__)
 
 @app.route('/token')
@@ -63,42 +60,6 @@ def call():
     # client -> PSTN
     resp.dial(to, callerId=caller_id)
   return str(resp)
-
-# @app.route("/assignment_callback", methods=['GET', 'POST'])
-# def assignment_callback():
-#     """Respond to assignment callbacks with an acceptance and 200 response"""
-
-#     ret = '{"instruction": "accept"}'
-#     resp = Response(response=ret, status=200, mimetype='application/json')
-#     return resp
-
-# @app.route("/create_task", methods=['GET', 'POST'])
-# def create_task():
-#     """Creating a Task"""
-#     task = client.taskrouter.workspace(workspace_sid) \
-#                  .tasks.create(workflow_sid=workflow_sid,
-#                                attributes='{"selected_language":"es"}')
-
-#     print(task.attributes)
-#     resp = Response({}, status=200, mimetype='application/json')
-#     return resp
-
-# @app.route("/accept_reservation", methods=['GET', 'POST'])
-# def accept_reservation():
-#     """Accepting a Reservation"""
-#     task_sid = request.args.get('task_sid')
-#     reservation_sid = request.args.get('reservation_sid')
-
-#     reservation = client.taskrouter.workspaces(workspace_sid) \
-#                                    .tasks(task_sid) \
-#                                    .reservations(reservation_sid) \
-#                                    .update(reservation_status='accepted')
-
-#     print(reservation.reservation_status)
-#     print(reservation.worker_name)
-
-#     resp = Response({}, status=200, mimetype='application/json')
-#     return resp
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
