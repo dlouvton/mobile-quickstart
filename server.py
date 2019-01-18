@@ -64,41 +64,41 @@ def call():
     resp.dial(to, callerId=caller_id)
   return str(resp)
 
-@app.route("/assignment_callback", methods=['GET', 'POST'])
-def assignment_callback():
-    """Respond to assignment callbacks with an acceptance and 200 response"""
+# @app.route("/assignment_callback", methods=['GET', 'POST'])
+# def assignment_callback():
+#     """Respond to assignment callbacks with an acceptance and 200 response"""
 
-    ret = '{"instruction": "accept"}'
-    resp = Response(response=ret, status=200, mimetype='application/json')
-    return resp
+#     ret = '{"instruction": "accept"}'
+#     resp = Response(response=ret, status=200, mimetype='application/json')
+#     return resp
 
-@app.route("/create_task", methods=['GET', 'POST'])
-def create_task():
-    """Creating a Task"""
-    task = client.taskrouter.workspace(workspace_sid) \
-                 .tasks.create(workflow_sid=workflow_sid,
-                               attributes='{"selected_language":"es"}')
+# @app.route("/create_task", methods=['GET', 'POST'])
+# def create_task():
+#     """Creating a Task"""
+#     task = client.taskrouter.workspace(workspace_sid) \
+#                  .tasks.create(workflow_sid=workflow_sid,
+#                                attributes='{"selected_language":"es"}')
 
-    print(task.attributes)
-    resp = Response({}, status=200, mimetype='application/json')
-    return resp
+#     print(task.attributes)
+#     resp = Response({}, status=200, mimetype='application/json')
+#     return resp
 
-@app.route("/accept_reservation", methods=['GET', 'POST'])
-def accept_reservation():
-    """Accepting a Reservation"""
-    task_sid = request.args.get('task_sid')
-    reservation_sid = request.args.get('reservation_sid')
+# @app.route("/accept_reservation", methods=['GET', 'POST'])
+# def accept_reservation():
+#     """Accepting a Reservation"""
+#     task_sid = request.args.get('task_sid')
+#     reservation_sid = request.args.get('reservation_sid')
 
-    reservation = client.taskrouter.workspaces(workspace_sid) \
-                                   .tasks(task_sid) \
-                                   .reservations(reservation_sid) \
-                                   .update(reservation_status='accepted')
+#     reservation = client.taskrouter.workspaces(workspace_sid) \
+#                                    .tasks(task_sid) \
+#                                    .reservations(reservation_sid) \
+#                                    .update(reservation_status='accepted')
 
-    print(reservation.reservation_status)
-    print(reservation.worker_name)
+#     print(reservation.reservation_status)
+#     print(reservation.worker_name)
 
-    resp = Response({}, status=200, mimetype='application/json')
-    return resp
+#     resp = Response({}, status=200, mimetype='application/json')
+#     return resp
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
