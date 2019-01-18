@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request
 from twilio.util import TwilioCapability
+from twilio.rest import Client
 import twilio.twiml
 
 # Account Sid and Auth Token can be found in your account dashboard
@@ -12,7 +13,10 @@ APP_SID = 'APZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'
 
 CALLER_ID = '+12345678901'
 CLIENT = 'jenny'
-CLIENTS = ['userId1, userId2, userId3']
+account_sid = ACCOUNT_SID
+auth_token  = AUTH_TOKEN
+workspace_sid = "{{ workspace_sid }}"
+workflow_sid = "{{ workflow_sid }}"
 
 app = Flask(__name__)
 
@@ -53,10 +57,7 @@ def call():
   caller_id = os.environ.get("CALLER_ID", CALLER_ID)
   if not from_client:
     # PSTN -> client
-    dialer = resp.dial(callerId=from_value)
-    dialer.client('14153606828')
-    # dialer.client('14157991740')
-    
+    resp.dial(callerId=from_value).client(CLIENT)
   elif to.startswith("client:"):
     # client -> client
     resp.dial(callerId=from_value).client(to[7:])
@@ -64,8 +65,47 @@ def call():
     # client -> PSTN
     resp.dial(to, callerId=caller_id)
   return str(resp)
+@app.route("/assignment_callback", methods=['GET', 'POST'])
+def assignment_callback():
+    """Respond to assignment callbacks with an acceptance and 200 response"""
 
+    ret = '{"instruction": "accept"}'
+    resp = Response(response=ret, status=200, mimetype='application/json')
+    return resp
 
+@app.route("/create_task", methods=['GET', 'POST'])
+def create_task():
+    """Creating a Task"""
+    task = client.taskrouter.workspace(workspace_sid) \
+                 .tasks.create(workflow_sid=workflow_sid,
+                               attributes='{"selected_language":"es"}')
+
+    print(task.attributes)
+    resp = Response({}, status=200, mimetype='application/json')
+    return resp
+
+@app.route("/accept_reservation", methods=['GET', 'POST'])
+def accept_reservation():
+    """Accepting a Reservation"""
+    task_sid = request.args.get('task_sid')
+    reservation_sid = request.args.get('reservation_sid')
+
+    reservation = client.taskrouter.workspaces(workspace_sid) \
+                                   .tasks(task_sid) \
+                                   .reservations(reservation_sid) \
+                                   .update(reservation_status='accepted')
+
+    print(reservation.reservation_status)
+    print(reservation.worker_name)
+
+    resp = Response({}, status=200, mimetype='application/json')
+    return resp
+
+@app.route('/', methods=['GET', 'POST'])
+def welcome():
+  resp = twilio.twiml.Response()
+  resp.say("Welcome to Twilio")
+  return str(resp)
 
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5000))
