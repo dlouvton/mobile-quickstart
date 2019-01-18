@@ -13,11 +13,9 @@ APP_SID = 'APZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'
 
 CALLER_ID = '+12345678901'
 CLIENT = 'jenny'
-account_sid = ACCOUNT_SID
-auth_token  = AUTH_TOKEN
-workspace_sid = "{{ workspace_sid }}"
-workflow_sid = "{{ workflow_sid }}"
-
+workspace_sid = 'sid1'
+workflow_sid = 'sid'
+task_sid = 'sid'
 app = Flask(__name__)
 
 @app.route('/token')
@@ -65,6 +63,7 @@ def call():
     # client -> PSTN
     resp.dial(to, callerId=caller_id)
   return str(resp)
+
 @app.route("/assignment_callback", methods=['GET', 'POST'])
 def assignment_callback():
     """Respond to assignment callbacks with an acceptance and 200 response"""
